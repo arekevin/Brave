@@ -138,7 +138,6 @@ select:hover {
 .card img {
   width: 100%;
   aspect-ratio: 1/1;
-  /* height: 210px; */
   object-fit: cover;
   object-position: center center;
   margin-bottom: 5px;

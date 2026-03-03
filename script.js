@@ -1,5 +1,5 @@
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTs-DZxNCoO7-hnJJNLioavfzWAOlNzj0TqARTMiU1MN5dQIdpzXC4Es7uxGCc-UsKwHg1lzSTfsif6/pub?gid=0&single=true&output=csv";
-
+const cloudName = "dvzdwcr5m";
 async function fetchProductos() {
   const res = await fetch(sheetURL);
   const csvText = await res.text();
@@ -52,7 +52,7 @@ function mostrarProductos(productos) {
     card.classList.add("card");
 
     card.innerHTML = `
-      <img src="${p.Imagen}" alt="${p.Nombre}">
+      <img src="https://res.cloudinary.com/${cloudName}/image/upload/v1771981588/${p.Imagen}" alt="${p.Nombre}">
       <h3>${p.Nombre}</h3>
       <p>${p.Marca}</p>
       <p>${p.Genero}</p>
