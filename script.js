@@ -1,5 +1,11 @@
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTs-DZxNCoO7-hnJJNLioavfzWAOlNzj0TqARTMiU1MN5dQIdpzXC4Es7uxGCc-UsKwHg1lzSTfsif6/pub?gid=0&single=true&output=csv";
 const cloudName = "dvzdwcr5m";
+
+let paginaActual = 1;
+const productosPorPagina = 20;
+
+let productosGlobal = [];
+
 async function fetchProductos() {
   const res = await fetch(sheetURL);
   const csvText = await res.text();
@@ -33,21 +39,35 @@ function llenarFiltros(productos) {
   });
 }
 
-function mostrarProductos(productos) {
-  const cont = document.getElementById("productos");
-  cont.innerHTML = "";
+function obtenerFiltrados() {
 
   const cat = document.getElementById("filtroCategoria").value;
   const mar = document.getElementById("filtroMarca").value;
   const gen = document.getElementById("filtroGenero").value;
 
-  const filtrados = productos.filter(p =>
+  return productosGlobal.filter(p =>
     (cat === "todos" || p.Categoria === cat) &&
     (mar === "todos" || p.Marca === mar) &&
     (gen === "todos" || p.Genero === gen)
   );
+}
 
-  filtrados.forEach(p => {
+function mostrarProductos() {
+
+  const cont = document.getElementById("productos");
+  cont.innerHTML = "";
+
+  const filtrados = obtenerFiltrados();
+
+  const totalPaginas = Math.ceil(filtrados.length / productosPorPagina);
+
+  const inicio = (paginaActual - 1) * productosPorPagina;
+  const fin = inicio + productosPorPagina;
+
+  const paginaProductos = filtrados.slice(inicio, fin);
+
+  paginaProductos.forEach(p => {
+
     const card = document.createElement("div");
     card.classList.add("card");
 
@@ -66,24 +86,76 @@ function mostrarProductos(productos) {
 
     cont.appendChild(card);
   });
+
+  actualizarPaginacion(totalPaginas);
+}
+
+function actualizarPaginacion(totalPaginas) {
+
+  document.getElementById("infoPagina").textContent =
+    `Página ${paginaActual} de ${totalPaginas}`;
+
+  document.getElementById("btnAnterior").disabled =
+    paginaActual === 1;
+
+  document.getElementById("btnSiguiente").disabled =
+    paginaActual === totalPaginas;
+
+  const paginacion = document.getElementById("paginacion");
+
+  if (totalPaginas <= 1) {
+    paginacion.style.display = "none";
+  } else {
+    paginacion.style.display = "flex";
+  }
+}
+
+function paginaAnterior() {
+  if (paginaActual > 1) {
+    paginaActual--;
+    mostrarProductos();
+  }
+}
+
+function paginaSiguiente() {
+  const total = Math.ceil(obtenerFiltrados().length / productosPorPagina);
+
+  if (paginaActual < total) {
+    paginaActual++;
+    mostrarProductos();
+  }
 }
 
 (async () => {
+
   try {
-    const productos = await fetchProductos();
-    llenarFiltros(productos);
+
+    productosGlobal = await fetchProductos();
+
+    llenarFiltros(productosGlobal);
 
     document.getElementById("filtroCategoria")
-      .addEventListener("change", () => mostrarProductos(productos));
+      .addEventListener("change", () => {
+        paginaActual = 1;
+        mostrarProductos();
+      });
 
     document.getElementById("filtroMarca")
-      .addEventListener("change", () => mostrarProductos(productos));
+      .addEventListener("change", () => {
+        paginaActual = 1;
+        mostrarProductos();
+      });
 
     document.getElementById("filtroGenero")
-      .addEventListener("change", () => mostrarProductos(productos));
+      .addEventListener("change", () => {
+        paginaActual = 1;
+        mostrarProductos();
+      });
 
-    mostrarProductos(productos);
+    mostrarProductos();
+
   } catch (error) {
     console.error("Error cargando productos:", error);
   }
+
 })();

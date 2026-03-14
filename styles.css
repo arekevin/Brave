@@ -105,7 +105,30 @@ select:hover {
 #filtroCategoria {
   display: none;
 }
+/* ============================= */
+/* PAGINACIÓN */
+/* ============================= */
 
+.paginacion {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 20px;
+}
+
+.paginacion button {
+  padding: 6px 14px;
+  border: none;
+  background: black;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.paginacion button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 /* =========================
    GRID PRODUCTOS
 ========================= */
@@ -183,7 +206,20 @@ select:hover {
   background: #25D366;
   transform: translateY(-2px);
 }
+.footer {
+  background: #111;
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+  margin-top: 40px;
+}
 
+.credito {
+  font-size: 10px;
+  opacity: 0.7;
+  color: #eee;
+  margin-top: 10px;
+}
 /* =========================
    RESPONSIVE
 ========================= */
